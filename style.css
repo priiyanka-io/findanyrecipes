@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --paper: #FBF7EF;
+  --paper-dim: #F1EBDD;
+  --ink: #2B2118;
+  --ink-soft: #6B5E4E;
+  --olive: #45521F;
+  --olive-deep: #313C13;
+  --mustard: #D9A441;
+  --mustard-dim: #EFD9A3;
+  --berry: #8A3B3B;
+  --line: #D8CDB8;
+  --radius: 4px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+
+.brand-panel {
+  background: var(--olive-deep);
+  color: var(--paper);
+  padding:  48px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-mark {
+  font-family: 'Fraunces', serif;
+  font-size: 88px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.brand-copy h1 {
+  font-family: 'Fraunces', serif;
+  font-size:45px;
+  font-weight: 600;
+  line-height: 1.1;
+ 
+}
+
+.brand-copy p {
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 34ch;
+  color: var(--mustard-dim);
+}
+
+
+
+
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:  24px;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper);
+  border: 1.5px dashed var(--line);
+  border-radius: 8px;
+  padding: 40px 32px;
+}
+
+.form-card .eyebrow {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+}
+
+.form-card h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 28px;
+}
+
+.field { margin-bottom: 18px; }
+
+.field label {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus {
+  border-color: var(--olive);
+  box-shadow: 0 0 0 3px rgba(69,82,31,0.12);
+}
+
+.field input.err {
+  border-color: var(--berry);
+}
+
+.field .err-msg {
+  display: none;
+  font-size: 13px;
+  color: var(--berry);
+  margin-top: 6px;
+}
+
+.field .err-msg.show { display: block; }
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--paper);
+  background: var(--olive);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover { background: var(--olive-deep); }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.btn-google {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-google:hover { background: var(--paper-dim); }
+.btn-google img { width: 18px; height: 18px; }
+
+.form-google-err {
+  display: none;
+  font-size: 13px;
+  color: var(--berry);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.form-google-err.show { display: block; }
+
+.switch-line {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 24px;
+}
+
+.switch-line a {
+  color: var(--olive);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch-line a:hover { text-decoration: underline; }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; }
+  .brand-panel { display: none;}
+  .card-motif { display: none; }
+  .brand-copy h1 { font-size: 26px; }
+}

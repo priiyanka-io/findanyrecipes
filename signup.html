@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rasoi — Create account</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand-panel">
+    <div class="brand-mark">Rasoi</div>
+    <div class="brand-copy">
+      <h1>Save the recipes you'll actually cook again.</h1>
+      <p>Search any ingredient, find a recipe worth keeping, and build a collection that's yours.</p>
+    </div>
+    
+  </div>
+
+  
+  <div class="form-panel">
+    <div class="form-card">
+      <p class="eyebrow">Get started</p>
+      <h2>Create your account</h2>
+
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" placeholder="Your name" autocomplete="name">
+          <p class="err-msg" id="nameError"></p>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+          <p class="err-msg" id="emailError"></p>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password">
+          <p class="err-msg" id="passwordError"></p>
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <input type="password" id="confirmPassword" placeholder="Re-enter password" autocomplete="new-password">
+          <p class="err-msg" id="confirmPasswordError"></p>
+        </div>
+
+        <button type="submit" id="signup" class="btn-primary">Sign up</button>
+
+        <div class="divider">or</div>
+
+        <button type="button" class="btn-google"   id="googleSignupBtn">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="">
+          Continue with Google
+        </button>
+        <p class="form-google-err" id="googleError"></p>
+      </form>
+
+      <p class="switch-line">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="auth.js"></script>
+
+
+</body>
+</html>
