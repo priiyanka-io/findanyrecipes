@@ -10,6 +10,14 @@ import { serverTimestamp, doc, setDoc ,getDoc} from "https://www.gstatic.com/fir
   import { auth, db, googleProvider } from "./firebase-config.js";
 const form = document.getElementById("signupForm");
 
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+const unsub = onAuthStateChanged(auth, (user) => {
+  unsub(); 
+  if (user) {
+    window.location.href = "recipe.html";
+  }
+});
 form.addEventListener("submit", async (e) => {
 
   e.preventDefault();
@@ -100,18 +108,21 @@ form.addEventListener("submit", async (e) => {
      window.location.href = "profile.html";
     form.reset();
   } catch (error) {
-    console.log(error);
+    
     if (error.code === "auth/email-already-in-use") {
       emailError.textContent =
         "This email is already registered.";
+        emailError.classList.add("show"); 
     }
     else if (error.code === "auth/invalid-email") {
       emailError.textContent =
         "Please enter a valid email.";
+        emailError.classList.add("show"); 
     }
     else {
       emailError.textContent =
         "Something went wrong. Please try again.";
+        emailError.classList.add("show"); 
     }
   }
 });
@@ -121,7 +132,6 @@ const signupWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    // Check karo document pehle se hai ya nahi (taaki dobara login pe overwrite na ho)
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 

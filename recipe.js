@@ -1,5 +1,6 @@
 import { auth, db } from "./firebase-config.js";
 import { doc, setDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
 
@@ -8,6 +9,7 @@ const recipeGrid = document.getElementById("recipeGrid");
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
 const searchInput = document.getElementById("searchInput");
+const clearSearchBtn = document.getElementById("clearSearchBtn");
 
 
 async function isRecipeSaved(mealId) {
@@ -33,7 +35,6 @@ async function saveRecipe(meal) {
       area: meal.strArea || "",
       savedAt: new Date()
     });
-    console.log("Recipe saved successfully:", meal.strMeal);
   } catch (err) {
     console.error("SAVE ERROR:", err);
   }
@@ -45,7 +46,6 @@ async function removeRecipe(mealId) {
 
   try {
     await deleteDoc(doc(db, "users", user.uid, "savedRecipes", mealId));
-    console.log("Recipe removed successfully:", mealId);
   } catch (err) {
     console.error("REMOVE ERROR:", err);
   }
@@ -98,8 +98,29 @@ async function getAllMeals() {
   );
 
   const results = await Promise.all(requests);
-  return results.flat(); 
+  return results.flat();
 }
+
+
+function showGridLoading(count = 8) {
+  recipeGrid.innerHTML = "";
+  emptyState.hidden = true;
+  resultCount.textContent = "Loading...";
+
+  for (let i = 0; i < count; i++) {
+    const skeleton = document.createElement("div");
+    skeleton.className = "recipe-card skeleton-card";
+    skeleton.innerHTML = `
+      <div class="card-image skeleton-shimmer"></div>
+      <div class="card-body">
+        <div class="skeleton-line skeleton-shimmer" style="width:70%;"></div>
+        <div class="skeleton-line skeleton-shimmer" style="width:45%;"></div>
+      </div>
+    `;
+    recipeGrid.appendChild(skeleton);
+  }
+}
+
 
 function renderMeals(meals) {
   recipeGrid.innerHTML = "";
@@ -131,11 +152,9 @@ function renderMeals(meals) {
     card.addEventListener("click", () => openRecipeModal(meal.idMeal));
 
     saveBtn.addEventListener("click", async (e) => {
-      e.stopPropagation(); 
-      console.log("Save button clicked for:", meal.strMeal);
+      e.stopPropagation();
 
       const currentlySaved = saveBtn.dataset.saved === "true";
-      console.log("Currently saved?", currentlySaved);
 
       if (currentlySaved) {
         await removeRecipe(meal.idMeal);
@@ -152,39 +171,25 @@ function renderMeals(meals) {
   });
 }
 
-async function renderCategoryChips() {
-  const categories = await getAllCategories();
-
-  categories.forEach(cat => {
-    const chip = document.createElement("button");
-    chip.className = "chip";
-    chip.dataset.cat = cat.strCategory;
-    chip.textContent = cat.strCategory;
-    chipRow.appendChild(chip);
-  });
-
-  document.querySelectorAll(".chip").forEach(chip => {
-    chip.addEventListener("click", async () => {
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-      chip.classList.add("active");
-
-      const category = chip.dataset.cat;
-
-      if (category === "all") {
-        const meals = await getAllMeals();
-        renderMeals(meals);
-      } else {
-        const meals = await getByCategory(category);
-        renderMeals(meals);
-      }
-    });
-  });
-}
 
 async function openRecipeModal(id) {
-  const meal = await getRecipeDetails(id);
   const modalOverlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("recipeModal");
+
+  modal.innerHTML = `
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-loading">
+      <div class="spinner"></div>
+      <p>Loading recipe...</p>
+    </div>
+  `;
+  modalOverlay.classList.add("open");
+
+  document.getElementById("modalClose").addEventListener("click", () => {
+    modalOverlay.classList.remove("open");
+  });
+
+  const meal = await getRecipeDetails(id);
 
   let ingredientsHtml = "";
   for (let i = 1; i <= 20; i++) {
@@ -212,13 +217,26 @@ async function openRecipeModal(id) {
     </div>
   `;
 
-  modalOverlay.classList.add("open");
-
   document.getElementById("modalClose").addEventListener("click", () => {
     modalOverlay.classList.remove("open");
   });
 }
 
+
+searchInput.addEventListener("input", () => {
+  if (searchInput.value.length > 0) {
+    clearSearchBtn.classList.add("show");
+  } else {
+    clearSearchBtn.classList.remove("show");
+  }
+});
+
+clearSearchBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  clearSearchBtn.classList.remove("show");
+  searchInput.focus();
+  searchInput.dispatchEvent(new Event("input"));
+});
 
 let searchTimer;
 searchInput.addEventListener("input", (e) => {
@@ -226,6 +244,8 @@ searchInput.addEventListener("input", (e) => {
   const query = e.target.value.trim();
 
   searchTimer = setTimeout(async () => {
+    showGridLoading();
+
     if (query === "") {
       const meals = await getAllMeals();
       renderMeals(meals);
@@ -238,17 +258,55 @@ searchInput.addEventListener("input", (e) => {
     ]);
 
     const combinedMap = new Map();
-
     (byName || []).forEach(meal => combinedMap.set(meal.idMeal, meal));
     (byIngredient || []).forEach(meal => combinedMap.set(meal.idMeal, meal));
 
     const meals = Array.from(combinedMap.values());
-
     renderMeals(meals);
   }, 400);
 });
 
+// ---------------- CATEGORY CHIPS ----------------
+
+async function renderCategoryChips() {
+  const categories = await getAllCategories();
+
+  categories.forEach(cat => {
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.dataset.cat = cat.strCategory;
+    chip.textContent = cat.strCategory;
+    chipRow.appendChild(chip);
+  });
+
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", async () => {
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+
+      showGridLoading();
+
+      const category = chip.dataset.cat;
+
+      if (category === "all") {
+        const meals = await getAllMeals();
+        renderMeals(meals);
+      } else {
+        const meals = await getByCategory(category);
+        renderMeals(meals);
+      }
+    });
+  });
+}
 
 
-renderCategoryChips();
-getAllMeals().then(meals => renderMeals(meals));
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  showGridLoading();
+  renderCategoryChips();
+  getAllMeals().then(meals => renderMeals(meals));
+});
