@@ -1,20 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
+    signInWithPopup,
+ 
     signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-import { firebaseConfig } from "./firebase-config.js"; 
-  
-  const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+import { auth, googleProvider } from "./firebase-config.js";
 
 
 const loginForm = document.getElementById("loginForm");
@@ -51,7 +41,7 @@ loginForm.addEventListener("submit", async (e) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     console.log("Login successful:", user.uid);
-    
+     window.location.href = "profile.html";
   } catch (error) {
     console.log(error);
     if (error.code === "auth/user-not-found") {
@@ -72,7 +62,7 @@ const loginWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     console.log("Google login successful:", user);
-    // window.location.href = "dashboard.html";
+     window.location.href = "profile.html";
   } catch (error) {
     console.log("Google login error:", error);
   }

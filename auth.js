@@ -1,20 +1,13 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 import {
-  getAuth,
+ 
   createUserWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider,
-    signInWithEmailAndPassword
+ 
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { serverTimestamp, doc, setDoc ,getDoc} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-import { firebaseConfig } from "./firebase-config.js"; 
-  
-  const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+  import { auth, db, googleProvider } from "./firebase-config.js";
 const form = document.getElementById("signupForm");
 
 form.addEventListener("submit", async (e) => {
@@ -98,10 +91,13 @@ form.addEventListener("submit", async (e) => {
       doc(db, "users", user.uid),
       {
         name: name,
-        email: email
+        email: email,
+        bio: "",
+        createdAt: serverTimestamp()
       }
     );
-    console.log("Signup successful:", user.uid);
+
+     window.location.href = "profile.html";
     form.reset();
   } catch (error) {
     console.log(error);
@@ -122,12 +118,23 @@ form.addEventListener("submit", async (e) => {
 
 const signupWithGoogle = async () => {
   try {
-    const result = await signInWithPopup(
-      auth,
-  googleProvider
-    );
+    const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    console.log("Google signup successful:", user);
+
+    // Check karo document pehle se hai ya nahi (taaki dobara login pe overwrite na ho)
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        name: user.displayName || "User",
+        email: user.email,
+        bio: "",
+        createdAt: serverTimestamp()
+      });
+    }
+
+    window.location.href = "profile.html";
   } catch (error) {
     console.log("Google signup error:", error);
   }
