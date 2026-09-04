@@ -8,9 +8,18 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-onAuthStateChanged(auth, (user) => {
+const unsub = onAuthStateChanged(auth, async (user) => {
+  unsub(); // sirf ek baar chalega
+
   if (user) {
-    window.location.href = "recipe.html";
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      window.location.href = "recipe.html";
+    } else {
+      await user.delete();
+    }
   }
 });
 const loginForm = document.getElementById("loginForm");
@@ -88,8 +97,7 @@ const loginWithGoogle = async () => {
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-     
-      await auth.signOut();
+        await user.delete();  
       googleError.textContent = "No account found with this email. Please sign up first.";
       googleError.classList.add("show");
       return;
