@@ -441,3 +441,23 @@ font-weight: 800;
   border-radius: 8px;
   margin-bottom: 12px;
 }
+.modal-video-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FF0000;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 12px 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(255, 0, 0, 0.25);
+}
+
+.modal-video-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 0, 0, 0.35);
+}

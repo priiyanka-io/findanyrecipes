@@ -9,7 +9,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 const unsub = onAuthStateChanged(auth, async (user) => {
-  unsub(); // sirf ek baar chalega
+  unsub(); 
 
   if (user) {
     const userRef = doc(db, "users", user.uid);
@@ -62,7 +62,7 @@ loginForm.addEventListener("submit", async (e) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
   
-    window.location.href = "profile.html";
+     window.location.href = "recipe.html";
   } catch (error) {
     console.log(error);
   console.log("User document nahi mila");
@@ -103,7 +103,7 @@ const loginWithGoogle = async () => {
       return;
     }
 
-    window.location.href = "profile.html";
+    window.location.href = "recipe.html";
 
   } catch (error) {
     
@@ -120,3 +120,21 @@ const loginWithGoogle = async () => {
 };
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 googleLoginBtn.addEventListener("click", loginWithGoogle);
+
+  gsap.set(".brand-mark, .brand-copy h1, .brand-copy p", { opacity: 0, y: 24 });
+  gsap.set(".form-card", { opacity: 0, y: 30, scale: 0.97 });
+  gsap.set(".eyebrow, .form-card h2, .field, .btn-primary, .divider, .btn-google, .switch-line", { opacity: 0, y: 18 });
+
+  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+  tl.to(".brand-mark", { opacity: 1, y: 0, duration: 0.6 })
+    .to(".brand-copy h1", { opacity: 1, y: 0, duration: 0.7 }, "-=0.3")
+    .to(".brand-copy p", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
+    .to(".form-card", { opacity: 1, y: 0, scale: 1, duration: 0.8 }, "-=0.5")
+    .to(".eyebrow", { opacity: 1, y: 0, duration: 0.5 }, "-=0.4")
+    .to(".form-card h2", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
+    .to(".field", { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, "-=0.25")
+    .to(".btn-primary", { opacity: 1, y: 0, duration: 0.5 }, "-=0.15")
+    .to(".divider", { opacity: 1, y: 0, duration: 0.4 }, "-=0.25")
+    .to(".btn-google", { opacity: 1, y: 0, duration: 0.5 }, "-=0.2")
+    .to(".switch-line", { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");

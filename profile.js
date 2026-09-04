@@ -170,16 +170,23 @@ async function openRecipeModal(mealId) {
       }
     }
 
-    recipeModalBody.innerHTML = `
-      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="modal-recipe-img">
-      <h2>${meal.strMeal}</h2>
-      <p class="modal-tags">${meal.strArea || ""} ${meal.strCategory ? "· " + meal.strCategory : ""}</p>
-      <h3>Ingredients</h3>
-      <ul class="modal-ingredients">${ingredientsHtml}</ul>
-      <h3>Instructions</h3>
-      <p class="modal-instructions">${meal.strInstructions}</p>
-      ${meal.strYoutube ? `<a href="${meal.strYoutube}" target="_blank" class="modal-video-link">Watch on YouTube</a>` : ""}
-    `;
+   recipeModalBody.innerHTML = `
+  <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="modal-recipe-img">
+  <h2>${meal.strMeal}</h2>
+  <p class="modal-tags">${meal.strArea || ""} ${meal.strCategory ? "· " + meal.strCategory : ""}</p>
+  ${meal.strYoutube ? `
+    <a href="${meal.strYoutube}" target="_blank" rel="noopener" class="modal-video-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M23.5 6.2c-.3-1.1-1.1-1.9-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5C1.6 4.3.8 5.1.5 6.2 0 8.1 0 12 0 12s0 3.9.5 5.8c.3 1.1 1.1 1.9 2.2 2.2 1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5c1.1-.3 1.9-1.1 2.2-2.2.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+      </svg>
+      Watch on YouTube
+    </a>
+  ` : ""}
+  <h3>Ingredients</h3>
+  <ul class="modal-ingredients">${ingredientsHtml}</ul>
+  <h3>Instructions</h3>
+  <p class="modal-instructions">${meal.strInstructions}</p>
+`;
 
   } catch (error) {
     console.error("Error fetching recipe detail:", error);
@@ -226,3 +233,17 @@ const saveBioBtn = document.getElementById("saveBioBtn");
 if (saveBioBtn) {
   saveBioBtn.addEventListener("click", handleSave);
 }
+gsap.set(".navbar", { opacity: 0, y: -20 });
+gsap.set(".avatar", { opacity: 0, y: 20, scale: 0.9 });
+gsap.set(".profile-info-header, .bio-block", { opacity: 0, y: 24 });
+gsap.set(".liked-title", { opacity: 0, y: 20 });
+gsap.set(".liked-grid", { opacity: 0, y: 30 });
+
+const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+tl.to(".navbar", { opacity: 1, y: 0, duration: 0.6 })
+  .to(".avatar", { opacity: 1, y: 0, scale: 1, duration: 0.6 }, "-=0.3")
+  .to(".profile-info-header", { opacity: 1, y: 0, duration: 0.6 }, "-=0.35")
+  .to(".bio-block", { opacity: 1, y: 0, duration: 0.6 }, "-=0.3")
+  .to(".liked-title", { opacity: 1, y: 0, duration: 0.5 }, "-=0.25")
+  .to(".liked-grid", { opacity: 1, y: 0, duration: 0.6 }, "-=0.3");

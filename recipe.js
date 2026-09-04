@@ -200,22 +200,30 @@ async function openRecipeModal(id) {
     }
   }
 
-  modal.innerHTML = `
-    <button class="modal-close" id="modalClose">&times;</button>
-    <div class="modal-image" style="background-image:url('${meal.strMealThumb}');background-size:cover;background-position:center;"></div>
-    <div class="modal-content">
-      <span class="cat-tag">${meal.strCategory}</span>
-      <h2>${meal.strMeal}</h2>
-      <div class="modal-section">
-        <h3>Ingredients</h3>
-        <ul class="ingredient-list">${ingredientsHtml}</ul>
-      </div>
-      <div class="modal-section">
-        <h3>Instructions</h3>
-        <p>${meal.strInstructions}</p>
-      </div>
+modal.innerHTML = `
+  <button class="modal-close" id="modalClose">&times;</button>
+  <div class="modal-image" style="background-image:url('${meal.strMealThumb}');background-size:cover;background-position:center;"></div>
+  <div class="modal-content">
+    <span class="cat-tag">${meal.strCategory}</span>
+    <h2>${meal.strMeal}</h2>
+    ${meal.strYoutube ? `
+      <a href="${meal.strYoutube}" target="_blank" rel="noopener" class="youtube-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.5 6.2c-.3-1.1-1.1-1.9-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5C1.6 4.3.8 5.1.5 6.2 0 8.1 0 12 0 12s0 3.9.5 5.8c.3 1.1 1.1 1.9 2.2 2.2 1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5c1.1-.3 1.9-1.1 2.2-2.2.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+        </svg>
+        Watch on YouTube
+      </a>
+    ` : ""}
+    <div class="modal-section">
+      <h3>Ingredients</h3>
+      <ul class="ingredient-list">${ingredientsHtml}</ul>
     </div>
-  `;
+    <div class="modal-section">
+      <h3>Instructions</h3>
+      <p>${meal.strInstructions}</p>
+    </div>
+  </div>
+`;
 
   document.getElementById("modalClose").addEventListener("click", () => {
     modalOverlay.classList.remove("open");
@@ -310,3 +318,12 @@ onAuthStateChanged(auth, (user) => {
   renderCategoryChips();
   getAllMeals().then(meals => renderMeals(meals));
 });
+gsap.set(".navbar", { opacity: 0, y: -20 });
+gsap.set(".hero-bar", { opacity: 0, y: 20 });
+gsap.set(".section-head", { opacity: 0, y: 20 });
+
+const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+tl.to(".navbar", { opacity: 1, y: 0, duration: 0.6 })
+  .to(".hero-bar", { opacity: 1, y: 0, duration: 0.6 }, "-=0.3")
+  .to(".section-head", { opacity: 1, y: 0, duration: 0.5 }, "-=0.25");

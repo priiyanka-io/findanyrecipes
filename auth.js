@@ -105,7 +105,7 @@ form.addEventListener("submit", async (e) => {
       }
     );
 
-     window.location.href = "profile.html";
+      window.location.href = "recipe.html";
     form.reset();
   } catch (error) {
     
@@ -144,7 +144,7 @@ const signupWithGoogle = async () => {
       });
     }
 
-    window.location.href = "profile.html";
+    window.location.href = "recipe.html";
   } catch (error) {
     console.log("Google signup error:", error);
   }
@@ -156,3 +156,20 @@ googleSignupBtn.addEventListener(
   "click",
   signupWithGoogle
 );
+gsap.set(".brand-mark, .brand-copy h1, .brand-copy p", { opacity: 0, y: 24 });
+gsap.set(".form-card", { opacity: 0, y: 30, scale: 0.97 });
+gsap.set(".eyebrow, .form-card h2, .field, .btn-primary, .divider, .btn-google, .switch-line", { opacity: 0, y: 18 });
+
+const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+tl.to(".brand-mark", { opacity: 1, y: 0, duration: 0.6 })
+  .to(".brand-copy h1", { opacity: 1, y: 0, duration: 0.7 }, "-=0.3")
+  .to(".brand-copy p", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
+  .to(".form-card", { opacity: 1, y: 0, scale: 1, duration: 0.8 }, "-=0.5")
+  .to(".eyebrow", { opacity: 1, y: 0, duration: 0.5 }, "-=0.4")
+  .to(".form-card h2", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
+  .to(".field", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, "-=0.25")
+  .to(".btn-primary", { opacity: 1, y: 0, duration: 0.5 }, "-=0.15")
+  .to(".divider", { opacity: 1, y: 0, duration: 0.4 }, "-=0.25")
+  .to(".btn-google", { opacity: 1, y: 0, duration: 0.5 }, "-=0.2")
+  .to(".switch-line", { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
