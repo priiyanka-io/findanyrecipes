@@ -72,13 +72,13 @@ form.addEventListener("submit", async (e) => {
   if (confirmPassword === "") {
     confirmPasswordError.textContent =
       "Please confirm your password";
-        passwordError.classList.add("show");
+    confirmPasswordError.classList.add("show");
     isValid = false;
   } else if (password !== confirmPassword) {
 
     confirmPasswordError.textContent =
       "Passwords do not match";
-        passwordError.classList.add("show");
+       confirmPasswordError.classList.add("show");
     isValid = false;
   }
   if (!isValid) {
